@@ -17,6 +17,9 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Row, RowData, flexRender } from "@tanstack/react-table";
+import { Entity } from "@/data/schema";
+import FilmCard from "./filmCard";
+import FilmCardSkeleton from "./film-card-skeleton";
 
 
 interface SheetRowProps {
@@ -25,7 +28,7 @@ interface SheetRowProps {
 
 
 const SheetRow: FC<SheetRowProps> = ({ row }) => {
-
+    const entityData : Entity = row.original
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -38,10 +41,13 @@ const SheetRow: FC<SheetRowProps> = ({ row }) => {
                 </TableRow></SheetTrigger>
             <SheetContent side={"bottom"}>
                 <SheetHeader>
-                    <SheetTitle>Are you absolutely sure?</SheetTitle>
-                    <SheetDescription>
-                        Thasdfnnot be undone. This will permanently delete your account
-                        anasdf
+                    <SheetTitle>{entityData.name}</SheetTitle>
+                    <SheetDescription className="grid md:grid-cols-4 gap-5">
+                        {entityData.films.map((item)=>{
+                            return (
+                                <FilmCard url={item} key={item}/>
+                            )
+                        })}
                     </SheetDescription>
                 </SheetHeader>
             </SheetContent>
