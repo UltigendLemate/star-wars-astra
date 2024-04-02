@@ -15,28 +15,33 @@ export default function Page() {
   const [data, setData] = useState<Entity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
-
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAllPages = async () => {
       setIsLoading(true);
       setError(null);
-
-      try {
-        const response = await fetch('https://swapi.dev/api/people/');
-        if (!response.ok) {
-          throw new Error(`Error fetching data: ${response.statusText}`);
+      setData([]); 
+      let dataTemp: Entity[] = [];
+      for (let page = 1; page <= 8; page++) {
+        try {
+          const response = await fetch(`https://swapi.dev/api/people?page=${page}`);
+          if (!response.ok) {
+            throw new Error(`Error fetching data from page ${page}: ${response.statusText}`);
+          }
+          const json: ApiResponse = await response.json();
+          dataTemp = [...dataTemp, ...json.results];
+          // setData((data) => [...data, ...json.results]);
+        } catch (error) {
+          console.error('Error fetching data from page', page, ':', error);
+          setError(`Error fetching data from page ${page}. Please try again.`);
+          break; 
         }
-        const json: ApiResponse = await response.json();
-        setData(json.results); // Assuming "results" holds the data
-      } catch (error: any) {
-        console.error('Error fetching data:', error);
-        setError(error.message ?? "Error occured");
-      } finally {
-        setIsLoading(false);
       }
+      setData(dataTemp);
+  
+      setIsLoading(false);
     };
-
-    fetchData();
+  
+    fetchAllPages();
   }, []);
 
 
