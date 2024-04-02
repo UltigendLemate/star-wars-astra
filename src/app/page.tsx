@@ -29,7 +29,6 @@ export default function Page() {
           }
           const json: ApiResponse = await response.json();
           dataTemp = [...dataTemp, ...json.results];
-          // setData((data) => [...data, ...json.results]);
         } catch (error) {
           console.error('Error fetching data from page', page, ':', error);
           setError(`Error fetching data from page ${page}. Please try again.`);

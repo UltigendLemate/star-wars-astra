@@ -24,7 +24,6 @@ const FilmCard: FC<filmCardProps> = ({url}) => {
             }
             const json : Film = await response.json();
             setData(json);
-            console.log(json)
           } catch (error : any) {
             console.error('Error fetching data:', error);
             setError(error.message ?? "Error occured");
@@ -38,10 +37,10 @@ const FilmCard: FC<filmCardProps> = ({url}) => {
 
       if (isLoading || !data || error) return <FilmCardSkeleton/>
     return ( 
-    <div className="rounded-md border-dashed border border-primary p-4 space-y-2">
+    <div className="rounded-md border-dashed border border-primary p-4 text-left space-y-2">
         <div className="flex justify-between gap-2 items-center">
         <h4 className="text-lg text-black font-medium">{data.title}</h4>
-        <p className="text-xs bg-accent p-1">{data.release_date}</p>
+        <p className="text-xs bg-accent p-1 whitespace-nowrap">{data.release_date}</p>
         </div>
         <p className="line-clamp-2">{data.opening_crawl}</p>
 
