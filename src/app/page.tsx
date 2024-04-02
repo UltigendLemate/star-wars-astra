@@ -19,25 +19,23 @@ export default function Page() {
     const fetchAllPages = async () => {
       setIsLoading(true);
       setError(null);
-      setData([]); 
-      let dataTemp: Entity[] = [];
-      for (let page = 1; page <= 8; page++) {
-        try {
-          const response = await fetch(`https://swapi.dev/api/people?page=${page}`);
-          if (!response.ok) {
-            throw new Error(`Error fetching data from page ${page}: ${response.statusText}`);
-          }
-          const json: ApiResponse = await response.json();
-          dataTemp = [...dataTemp, ...json.results];
-        } catch (error) {
-          console.error('Error fetching data from page', page, ':', error);
-          setError(`Error fetching data from page ${page}. Please try again.`);
-          break; 
-        }
-      }
-      setData(dataTemp);
   
-      setIsLoading(false);
+      const urls = [];
+      for (let page = 1; page <= 8; page++) {
+        urls.push(`https://swapi.dev/api/people?page=${page}`);
+      }
+  
+      try {
+        const responses = await Promise.all(urls.map(url => fetch(url)));
+        const jsonData = await Promise.all(responses.map(response => response.json()));
+        const allResults = jsonData.flatMap(data => data.results);
+        setData(allResults);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Error fetching data. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
     };
   
     fetchAllPages();
